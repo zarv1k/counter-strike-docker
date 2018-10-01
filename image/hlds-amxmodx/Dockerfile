@@ -19,8 +19,12 @@ RUN mkdir -p /opt/steam && cd /opt/steam && \
 
 # Install HLDS
 RUN mkdir -p /opt/hlds
-# Workaround for "app_update 90" bug, see https://forums.alliedmods.net/showthread.php?p=2518786
-RUN /opt/steam/steamcmd.sh +login $steam_user $steam_password +force_install_dir /opt/hlds +app_update 90 validate +quit
+# There is a bug, described here: https://developer.valvesoftware.com/wiki/SteamCMD - Bug: 	HLDS (appid 90) currently requires multiple runs of the app_update command before all the required files are successfully installed. Simply run app_update 90 validate multiple times until no more updates take place.
+# Seems the workaround for "app_update 90" bug does not work anymore, (see https://forums.alliedmods.net/showthread.php?p=2518786 as the source of previous workaround)
+# So for now, just try to run "app_update 90 validate" a few times with ignoring errors for downloading the appid 90 completely
+RUN /opt/steam/steamcmd.sh +login $steam_user $steam_password +force_install_dir /opt/hlds +app_update 90 validate +quit || :
+RUN /opt/steam/steamcmd.sh +login $steam_user $steam_password +force_install_dir /opt/hlds +app_update 90 validate +quit || :
+RUN /opt/steam/steamcmd.sh +login $steam_user $steam_password +force_install_dir /opt/hlds +app_update 90 validate +quit || :
 RUN /opt/steam/steamcmd.sh +login $steam_user $steam_password +force_install_dir /opt/hlds +app_update 70 validate +quit || :
 RUN /opt/steam/steamcmd.sh +login $steam_user $steam_password +force_install_dir /opt/hlds +app_update 10 validate +quit || :
 RUN /opt/steam/steamcmd.sh +login $steam_user $steam_password +force_install_dir /opt/hlds +app_update 90 validate +quit

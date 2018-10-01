@@ -8,3 +8,4 @@ fy_pool_day
 fy_snow
 awp_india
 aim_map
+$1000$
